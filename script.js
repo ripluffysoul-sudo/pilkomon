@@ -134,28 +134,46 @@ btnDownloadSave.addEventListener('click', () => {
     });
 });
 
-// 9. Carregar a ROM no Emulador EmuladorJS
+// 9. Carregar a ROM no Emulador (Sem os Avisos do Console)
 romInput.addEventListener('change', (e) => {
   const file = e.target.files[0];
   if (!file) return;
 
-  statusMsg.textContent = 'Carregando o jogo...';
+  statusMsg.textContent = 'Carregando o emulador...';
 
-  // Configurações Globais do EmulatorJS
-  window.EJS_player = '#game';
-  window.EJS_core = 'snes';
-  window.EJS_gameName = file.name;
-  window.EJS_color = '#e52521';
-  window.EJS_startOnLoaded = true;
-  window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-  window.EJS_gameUrl = URL.createObjectURL(file);
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    // Configurações do EmulatorJS
+    window.EJS_player = '#game';
+    window.EJS_core = 'snes';
+    window.EJS_gameName = file.name;
+    window.EJS_gameUrl = new Uint8Array(event.target.result);
+    
+    // ID único para evitar avisos de persistência de dados
+    window.EJS_gameID = file.name.replace(/[^a-zA-Z0-9]/g, "_");
+    
+    // Define idioma em inglês para evitar avisos de tradução faltante
+    window.EJS_language = 'en-US';
+    
+    window.EJS_color = '#e52521';
+    window.EJS_startOnLoaded = true;
+    window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
 
-  // Injeta dinamicamente o leitor do emulador
-  const loaderScript = document.createElement('script');
-  loaderScript.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-  loaderScript.onload = () => {
-    document.getElementById('file-uploader').style.display = 'none';
-    statusMsg.textContent = 'Jogo carregado com sucesso!';
+    // Remove qualquer script prévio para recarregar limpo
+    const oldScript = document.getElementById('ejs-loader');
+    if (oldScript) oldScript.remove();
+
+    // Injeta o script do emulador
+    const loaderScript = document.createElement('script');
+    loaderScript.id = 'ejs-loader';
+    loaderScript.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+    loaderScript.onload = () => {
+      document.getElementById('file-uploader').style.display = 'none';
+      statusMsg.textContent = 'Emulador pronto! Clique na tela para iniciar.';
+    };
+    
+    document.body.appendChild(loaderScript);
   };
-  document.body.appendChild(loaderScript);
+
+  reader.readAsArrayBuffer(file);
 });
