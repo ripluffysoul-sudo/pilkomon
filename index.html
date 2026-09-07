@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Mario World Web</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Super Mario World</h1>
+
+        <!-- Painel de Autenticação -->
+        <div id="auth-container">
+            <div id="logged-out-view">
+                <input type="email" id="email" placeholder="E-mail">
+                <input type="password" id="password" placeholder="Senha">
+                <button id="btn-login" class="btn-auth">Entrar</button>
+                <button id="btn-signup" class="btn-auth">Cadastrar</button>
+            </div>
+
+            <!-- Visível quando logado -->
+            <div id="logged-in-view" style="display: none;">
+                <p><strong id="user-email"></strong></p>
+                <div class="save-actions">
+                    <label for="save-file-input" class="btn-cloud">📤 Enviar Save para a Nuvem</label>
+                    <input type="file" id="save-file-input" style="display:none;">
+                    
+                    <button id="btn-download-save" class="btn-cloud">📥 Baixar Save da Nuvem</button>
+                    <button id="btn-logout" class="btn-danger">Sair</button>
+                </div>
+                <p id="status-msg"></p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="file-uploader">
+            <label for="rom-input" class="btn-upload">Escolher ROM (.smc / .sfc)</label>
+            <input type="file" id="rom-input" accept=".smc, .sfc, .fig, .swc">
+        </div>
+
+        <div id="game-container">
+            <div id="game"></div>
+        </div>
+    </main>
+
+    <!-- SDKs do Firebase (Versão Compatível) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>
