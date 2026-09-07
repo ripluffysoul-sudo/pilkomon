@@ -1,11 +1,11 @@
 // Configuração do seu projeto no Firebase
 const firebaseConfig = {
-    apiKey: "SUA_API_KEY_AQUI",
-    authDomain: "SEU_PROJECT_ID.firebaseapp.com",
-    projectId: "SEU_PROJECT_ID",
-    storageBucket: "SEU_PROJECT_ID.appspot.com",
-    messagingSenderId: "SEU_SENDER_ID",
-    appId: "SEU_APP_ID"
+    apiKey: "AIzaSyDGxB0esrym4rqKXVXkqmgytnjz6I2wakg",
+    authDomain: "pilkomon.firebaseapp.com",
+    projectId: "pilkomon",
+    storageBucket: "pilkomon.firebasestorage.app",
+    messagingSenderId: "810138694034",
+    appId: "810138694034"
 };
 
 // Inicializando Firebase e Serviços
