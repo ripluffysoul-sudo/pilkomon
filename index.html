@@ -15,7 +15,7 @@
         <div id="auth-container">
             <div id="logged-out-view">
                 <input type="email" id="email" placeholder="E-mail">
-                <input type="password" id="password" placeholder="Senha">
+                <input type="password" id="password" placeholder="Senha (mín. 6 dígitos)">
                 <button id="btn-login" class="btn-auth">Entrar</button>
                 <button id="btn-signup" class="btn-auth">Cadastrar</button>
             </div>
@@ -30,8 +30,8 @@
                     <button id="btn-download-save" class="btn-cloud">📥 Baixar Save da Nuvem</button>
                     <button id="btn-logout" class="btn-danger">Sair</button>
                 </div>
-                <p id="status-msg"></p>
             </div>
+            <p id="status-msg"></p>
         </div>
     </header>
 
@@ -46,11 +46,12 @@
         </div>
     </main>
 
-    <!-- SDKs do Firebase (Versão Compatível) -->
+    <!-- Firebase SDKs (Versão Compatível) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
 
+    <!-- Script Principal do Seu Projeto -->
     <script src="script.js"></script>
 </body>
 </html>
