@@ -5,7 +5,7 @@ const firebaseConfig = {
     projectId: "pilkomon",
     storageBucket: "pilkomon.firebasestorage.app",
     messagingSenderId: "810138694034",
-    appId: "810138694034"
+    appId: "1:810138694034:web:7d431e935703ddbffa914"
 };
 
 // Inicializando Firebase e Serviços
