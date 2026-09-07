@@ -1,107 +1,161 @@
-// Configuração do seu projeto no Firebase
+// 1. Configuração do Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyDGxB0esrym4rqKXVXkqmgytnjz6I2wakg",
-    authDomain: "pilkomon.firebaseapp.com",
-    projectId: "pilkomon",
-    storageBucket: "pilkomon.firebasestorage.app",
-    messagingSenderId: "810138694034",
-    appId: "1:810138694034:web:7d431e935703ddbffa914"
+  apiKey: "AIzaSyDGxB0esrym4rqKXVXkqmgytnjz6I2wakg",
+  authDomain: "pilkomon.firebaseapp.com",
+  projectId: "pilkomon",
+  storageBucket: "pilkomon.firebasestorage.app",
+  messagingSenderId: "810138694034",
+  appId: "1:810138694034:web:7d431e935703ddbffa914b",
+  measurementId: "G-DNCW8719QV"
 };
 
-// Inicializando Firebase e Serviços
+// Inicializa Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const storage = firebase.storage();
 
+// 2. Elementos DOM
+const loggedOutView = document.getElementById('logged-out-view');
+const loggedInView = document.getElementById('logged-in-view');
+const emailInput = document.getElementById('email');
+const passwordInput = document.getElementById('password');
+const userEmailText = document.getElementById('user-email');
 const statusMsg = document.getElementById('status-msg');
 
-// Monitor de Sessão de Usuário
-auth.onAuthStateChanged(user => {
-    if (user) {
-        document.getElementById('logged-out-view').style.display = 'none';
-        document.getElementById('logged-in-view').style.display = 'block';
-        document.getElementById('user-email').innerText = `Conta: ${user.email}`;
-    } else {
-        document.getElementById('logged-out-view').style.display = 'block';
-        document.getElementById('logged-in-view').style.display = 'none';
-    }
+const btnLogin = document.getElementById('btn-login');
+const btnSignup = document.getElementById('btn-signup');
+const btnLogout = document.getElementById('btn-logout');
+const saveFileInput = document.getElementById('save-file-input');
+const btnDownloadSave = document.getElementById('btn-download-save');
+const romInput = document.getElementById('rom-input');
+
+// 3. Status da Sessão
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    loggedOutView.style.display = 'none';
+    loggedInView.style.display = 'block';
+    userEmailText.textContent = user.email;
+  } else {
+    loggedOutView.style.display = 'block';
+    loggedInView.style.display = 'none';
+    userEmailText.textContent = '';
+  }
 });
 
-// Criar Conta
-document.getElementById('btn-signup').addEventListener('click', () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    auth.createUserWithEmailAndPassword(email, password)
-        .then(() => alert('Conta criada com sucesso!'))
-        .catch(error => alert('Erro no cadastro: ' + error.message));
-});
+// 4. Cadastro
+btnSignup.addEventListener('click', () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
 
-// Fazer Login
-document.getElementById('btn-login').addEventListener('click', () => {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    auth.signInWithEmailAndPassword(email, password)
-        .catch(error => alert('Erro ao entrar: ' + error.message));
-});
+  if (!email || !password) {
+    statusMsg.textContent = 'Preencha e-mail e senha.';
+    return;
+  }
 
-// Sair da Conta
-document.getElementById('btn-logout').addEventListener('click', () => {
-    auth.signOut();
-});
-
-// 1. ENVIAR O SAVE STATE PARA A NUVEM
-document.getElementById('save-file-input').addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    const user = auth.currentUser;
-
-    if (!file || !user) return;
-
-    statusMsg.innerText = "Enviando Save para a nuvem...";
-
-    // Salva o arquivo no Firebase Storage na pasta do ID do usuário
-    const storageRef = storage.ref(`saves/${user.uid}/mario_save.state`);
-    storageRef.put(file).then(() => {
-        statusMsg.innerText = "✅ Save enviado com sucesso para a nuvem!";
-    }).catch(err => {
-        statusMsg.innerText = "❌ Erro ao enviar: " + err.message;
+  auth.createUserWithEmailAndPassword(email, password)
+    .then(() => {
+      statusMsg.textContent = 'Conta criada com sucesso!';
+    })
+    .catch((error) => {
+      if (error.code === 'auth/weak-password') {
+        statusMsg.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+      } else if (error.code === 'auth/invalid-email') {
+        statusMsg.textContent = 'E-mail inválido.';
+      } else if (error.code === 'auth/email-already-in-use') {
+        statusMsg.textContent = 'E-mail já está em uso.';
+      } else {
+        statusMsg.textContent = 'Erro ao cadastrar: ' + error.message;
+      }
     });
 });
 
-// 2. BAIXAR O SAVE STATE DA NUVEM
-document.getElementById('btn-download-save').addEventListener('click', () => {
-    const user = auth.currentUser;
-    if (!user) return;
+// 5. Login
+btnLogin.addEventListener('click', () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
 
-    statusMsg.innerText = "Buscando o seu Save na nuvem...";
-
-    const storageRef = storage.ref(`saves/${user.uid}/mario_save.state`);
-    storageRef.getDownloadURL().then((url) => {
-        // Cria um link temporário para forçar o download no navegador
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = "mario_save.state";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        statusMsg.innerText = "✅ Save baixado! Agora recarregue-o no menu do emulador.";
-    }).catch(err => {
-        statusMsg.innerText = "❌ Nenhum save encontrado na sua conta.";
+  auth.signInWithEmailAndPassword(email, password)
+    .then(() => {
+      statusMsg.textContent = 'Login efetuado com sucesso!';
+    })
+    .catch((error) => {
+      statusMsg.textContent = 'Erro ao entrar: ' + error.message;
     });
 });
 
-// Inicialização do EmulatorJS ao carregar a ROM
-document.getElementById('rom-input').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (!file) return;
+// 6. Logout
+btnLogout.addEventListener('click', () => {
+  auth.signOut();
+  statusMsg.textContent = 'Desconectado.';
+});
 
+// 7. Salvar Save na Nuvem
+saveFileInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  const user = auth.currentUser;
+
+  if (!file || !user) return;
+
+  statusMsg.textContent = 'Enviando save...';
+  const storageRef = storage.ref(`saves/${user.uid}/${file.name}`);
+
+  storageRef.put(file)
+    .then(() => {
+      statusMsg.textContent = 'Save enviado com sucesso!';
+    })
+    .catch((error) => {
+      statusMsg.textContent = 'Erro ao enviar save: ' + error.message;
+    });
+});
+
+// 8. Baixar Save
+btnDownloadSave.addEventListener('click', () => {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const storageRef = storage.ref(`saves/${user.uid}`);
+
+  storageRef.listAll()
+    .then((res) => {
+      if (res.items.length === 0) {
+        statusMsg.textContent = 'Nenhum save encontrado na nuvem.';
+        return;
+      }
+      return res.items[0].getDownloadURL();
+    })
+    .then((url) => {
+      if (url) {
+        window.open(url, '_blank');
+        statusMsg.textContent = 'Download iniciado!';
+      }
+    })
+    .catch((error) => {
+      statusMsg.textContent = 'Erro ao buscar save: ' + error.message;
+    });
+});
+
+// 9. Carregar a ROM no Emulador EmuladorJS
+romInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  statusMsg.textContent = 'Carregando o jogo...';
+
+  // Configurações Globais do EmulatorJS
+  window.EJS_player = '#game';
+  window.EJS_core = 'snes';
+  window.EJS_gameName = file.name;
+  window.EJS_color = '#e52521';
+  window.EJS_startOnLoaded = true;
+  window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+  window.EJS_gameUrl = URL.createObjectURL(file);
+
+  // Injeta dinamicamente o leitor do emulador
+  const loaderScript = document.createElement('script');
+  loaderScript.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+  loaderScript.onload = () => {
     document.getElementById('file-uploader').style.display = 'none';
-
-    window.EJS_player = '#game';
-    window.EJS_core = 'snes';
-    window.EJS_gameUrl = URL.createObjectURL(file);
-    window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-
-    const script = document.createElement('script');
-    script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-    document.body.appendChild(script);
+    statusMsg.textContent = 'Jogo carregado com sucesso!';
+  };
+  document.body.appendChild(loaderScript);
 });
