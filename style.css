@@ -1,0 +1,58 @@
+/* Botões da Nuvem e Auth */
+#auth-container {
+    background-color: #333;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #fbd000;
+    margin-top: 15px;
+}
+
+#auth-container input {
+    padding: 8px;
+    margin: 4px;
+    border-radius: 4px;
+    border: none;
+}
+
+.btn-auth {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.btn-cloud {
+    background-color: #fbd000;
+    color: #000;
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    display: inline-block;
+}
+
+.btn-danger {
+    background-color: #e52521;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+#status-msg {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #43b047;
+}
